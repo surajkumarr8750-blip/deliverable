@@ -1,0 +1,144 @@
+<svg viewBox="0 0 1300 780" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <rect width="1300" height="780" fill="#0f172a"/>
+  <text x="650" y="42" text-anchor="middle" fill="#f8fafc" font-size="24" font-weight="700">Collections Analytics — Production Pipeline</text>
+  <text x="650" y="66" text-anchor="middle" fill="#94a3b8" font-size="13">Raw → Staging → Clean → Golden → Feature → Metrics → Dashboard</text>
+
+  <!-- stage boxes -->
+  <g id="stages">
+    <!-- RAW -->
+    <rect x="30" y="110" width="150" height="120" rx="10" fill="#1e293b" stroke="#334155"/>
+    <text x="105" y="135" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">1. RAW</text>
+    <text x="105" y="155" text-anchor="middle" fill="#94a3b8" font-size="10">17 source tables</text>
+    <text x="105" y="170" text-anchor="middle" fill="#94a3b8" font-size="10">calls, payments,</text>
+    <text x="105" y="184" text-anchor="middle" fill="#94a3b8" font-size="10">CRM, telephony,</text>
+    <text x="105" y="198" text-anchor="middle" fill="#94a3b8" font-size="10">WhatsApp/SMS/field</text>
+    <text x="105" y="215" text-anchor="middle" fill="#64748b" font-size="9">append-only, immutable</text>
+
+    <!-- STAGING -->
+    <rect x="210" y="110" width="150" height="120" rx="10" fill="#1e293b" stroke="#334155"/>
+    <text x="285" y="135" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">2. STAGING</text>
+    <text x="285" y="155" text-anchor="middle" fill="#94a3b8" font-size="10">1:1 typed copy</text>
+    <text x="285" y="170" text-anchor="middle" fill="#94a3b8" font-size="10">of raw, schema</text>
+    <text x="285" y="184" text-anchor="middle" fill="#94a3b8" font-size="10">validated per</text>
+    <text x="285" y="198" text-anchor="middle" fill="#94a3b8" font-size="10">data contract</text>
+    <text x="285" y="215" text-anchor="middle" fill="#64748b" font-size="9">incremental, by event_at</text>
+
+    <!-- CLEAN -->
+    <rect x="390" y="110" width="160" height="120" rx="10" fill="#1e293b" stroke="#334155"/>
+    <text x="470" y="135" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">3. CLEAN</text>
+    <text x="470" y="155" text-anchor="middle" fill="#94a3b8" font-size="10">dedup (payment_id,</text>
+    <text x="470" y="170" text-anchor="middle" fill="#94a3b8" font-size="10">call full-row),</text>
+    <text x="470" y="184" text-anchor="middle" fill="#94a3b8" font-size="10">tz normalize→IST,</text>
+    <text x="470" y="198" text-anchor="middle" fill="#94a3b8" font-size="10">disposition code map</text>
+    <text x="470" y="215" text-anchor="middle" fill="#64748b" font-size="9">quarantine table for rejects</text>
+
+    <!-- GOLDEN -->
+    <rect x="590" y="110" width="160" height="120" rx="10" fill="#1e3a2e" stroke="#22c55e"/>
+    <text x="670" y="135" text-anchor="middle" fill="#f0fdf4" font-size="14" font-weight="700">4. GOLDEN</text>
+    <text x="670" y="155" text-anchor="middle" fill="#bbf7d0" font-size="10">conformed entities:</text>
+    <text x="670" y="170" text-anchor="middle" fill="#bbf7d0" font-size="10">account, borrower,</text>
+    <text x="670" y="184" text-anchor="middle" fill="#bbf7d0" font-size="10">agent_id (operational),</text>
+    <text x="670" y="198" text-anchor="middle" fill="#bbf7d0" font-size="10">payment (deduped)</text>
+    <text x="670" y="215" text-anchor="middle" fill="#86efac" font-size="9">single source of truth</text>
+
+    <!-- FEATURE -->
+    <rect x="790" y="110" width="150" height="120" rx="10" fill="#1e293b" stroke="#334155"/>
+    <text x="865" y="135" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">5. FEATURE</text>
+    <text x="865" y="155" text-anchor="middle" fill="#94a3b8" font-size="10">contact rate, RPC,</text>
+    <text x="865" y="170" text-anchor="middle" fill="#94a3b8" font-size="10">PTP rate/kept,</text>
+    <text x="865" y="184" text-anchor="middle" fill="#94a3b8" font-size="10">recovery/agent-hr,</text>
+    <text x="865" y="198" text-anchor="middle" fill="#94a3b8" font-size="10">cost per ₹ recovered</text>
+    <text x="865" y="215" text-anchor="middle" fill="#64748b" font-size="9">versioned metric definitions</text>
+
+    <!-- METRICS -->
+    <rect x="970" y="110" width="150" height="120" rx="10" fill="#1e293b" stroke="#334155"/>
+    <text x="1045" y="135" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">6. METRICS</text>
+    <text x="1045" y="155" text-anchor="middle" fill="#94a3b8" font-size="10">daily/monthly</text>
+    <text x="1045" y="170" text-anchor="middle" fill="#94a3b8" font-size="10">aggregates +</text>
+    <text x="1045" y="184" text-anchor="middle" fill="#94a3b8" font-size="10">control-limit bands</text>
+    <text x="1045" y="198" text-anchor="middle" fill="#94a3b8" font-size="10">(±2σ trailing 6mo)</text>
+    <text x="1045" y="215" text-anchor="middle" fill="#64748b" font-size="9">anomaly flags emitted here</text>
+
+    <!-- DASHBOARD -->
+    <rect x="1150" y="110" width="120" height="120" rx="10" fill="#1e293b" stroke="#334155"/>
+    <text x="1210" y="135" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">7. DASH</text>
+    <text x="1210" y="155" text-anchor="middle" fill="#94a3b8" font-size="10">1-screen</text>
+    <text x="1210" y="170" text-anchor="middle" fill="#94a3b8" font-size="10">exec view</text>
+    <text x="1210" y="184" text-anchor="middle" fill="#94a3b8" font-size="10">+ drill-down</text>
+    <text x="1210" y="215" text-anchor="middle" fill="#64748b" font-size="9">refreshed daily</text>
+  </g>
+
+  <!-- arrows -->
+  <g stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)">
+    <line x1="180" y1="170" x2="208" y2="170"/>
+    <line x1="360" y1="170" x2="388" y2="170"/>
+    <line x1="550" y1="170" x2="588" y2="170"/>
+    <line x1="750" y1="170" x2="788" y2="170"/>
+    <line x1="940" y1="170" x2="968" y2="170"/>
+    <line x1="1120" y1="170" x2="1148" y2="170"/>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- lower band: cross-cutting concerns -->
+  <rect x="30" y="290" width="1240" height="200" rx="10" fill="#111827" stroke="#334155"/>
+  <text x="50" y="318" fill="#f8fafc" font-size="15" font-weight="700">Cross-cutting concerns</text>
+
+  <text x="50" y="345" fill="#e2e8f0" font-size="12" font-weight="700">Data contracts &amp; keys</text>
+  <text x="50" y="363" fill="#94a3b8" font-size="10">• account_id, borrower_id, agent_id, payment_id as PKs</text>
+  <text x="50" y="379" fill="#94a3b8" font-size="10">• agent identity blocked pending source-system fix</text>
+  <text x="50" y="395" fill="#94a3b8" font-size="10">• schema versions tracked, not silently coerced</text>
+
+  <text x="360" y="345" fill="#e2e8f0" font-size="12" font-weight="700">Lineage &amp; incremental processing</text>
+  <text x="360" y="363" fill="#94a3b8" font-size="10">• every golden row keeps source_row_id + transform_version</text>
+  <text x="360" y="379" fill="#94a3b8" font-size="10">• watermark on event_at (never recorded_at) for incremental loads</text>
+  <text x="360" y="395" fill="#94a3b8" font-size="10">• late-arriving events reprocess a rolling 7-day window nightly</text>
+
+  <text x="700" y="345" fill="#e2e8f0" font-size="12" font-weight="700">Backfills &amp; DQ checks</text>
+  <text x="700" y="363" fill="#94a3b8" font-size="10">• idempotent backfill jobs, partition-by-month replace</text>
+  <text x="700" y="379" fill="#94a3b8" font-size="10">• row-count, null-rate, dup-rate, FK-orphan checks per run</text>
+  <text x="700" y="395" fill="#94a3b8" font-size="10">• failed checks quarantine the batch, don't publish partial data</text>
+
+  <text x="1010" y="345" fill="#e2e8f0" font-size="12" font-weight="700">Monitoring &amp; anomaly detection</text>
+  <text x="1010" y="363" fill="#94a3b8" font-size="10">• MoM change outside ±2σ of trailing 6mo → auto-flag</text>
+  <text x="1010" y="379" fill="#94a3b8" font-size="10">• (this rule alone would have caught the Feb→Mar spike</text>
+  <text x="1010" y="395" fill="#94a3b8" font-size="10">   before it was reported as a trend)</text>
+
+  <line x1="50" y1="410" x2="1250" y2="410" stroke="#334155"/>
+  <text x="50" y="432" fill="#e2e8f0" font-size="12" font-weight="700">Metric definition discipline</text>
+  <text x="50" y="450" fill="#94a3b8" font-size="10">Every metric on the dashboard is versioned and computed from the GOLDEN layer only — never from a raw table — and every</text>
+  <text x="50" y="466" fill="#94a3b8" font-size="10">month-over-month headline number is shown with its trailing 6-month range, so a single-month swing cannot be presented as a trend.</text>
+
+  <!-- Dashboard mock -->
+  <rect x="30" y="520" width="1240" height="230" rx="10" fill="#111827" stroke="#334155"/>
+  <text x="50" y="548" fill="#f8fafc" font-size="15" font-weight="700">Executive dashboard — one screen, 60-second read</text>
+
+  <rect x="50" y="565" width="280" height="160" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="70" y="590" fill="#94a3b8" font-size="11">Recovery trend (MoM)</text>
+  <polyline points="70,700 120,660 170,695 220,650 270,680 300,655" fill="none" stroke="#38bdf8" stroke-width="2"/>
+  <text x="70" y="718" fill="#64748b" font-size="9">flat, within noise band — NOT trending up</text>
+
+  <rect x="350" y="565" width="260" height="160" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="370" y="590" fill="#94a3b8" font-size="11">Headline claim vs. reality</text>
+  <text x="370" y="625" fill="#f87171" font-size="20" font-weight="700">"+11%"</text>
+  <text x="370" y="645" fill="#64748b" font-size="10">reported (one month)</text>
+  <text x="370" y="675" fill="#4ade80" font-size="20" font-weight="700">+0.3% avg</text>
+  <text x="370" y="695" fill="#64748b" font-size="10">actual 7-month trend (n.s., p=0.89)</text>
+
+  <rect x="630" y="565" width="280" height="160" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="650" y="590" fill="#94a3b8" font-size="11">Channel conversion (PTP kept %)</text>
+  <text x="650" y="615" fill="#e2e8f0" font-size="10">CALL 25.7  SMS 25.6  FIELD 24.5  WA 23.9</text>
+  <text x="650" y="640" fill="#64748b" font-size="10">χ²=5.73, p=0.126 — no real winner</text>
+
+  <rect x="930" y="565" width="320" height="160" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="950" y="590" fill="#94a3b8" font-size="11">Data quality panel</text>
+  <text x="950" y="613" fill="#e2e8f0" font-size="10">Duplicate payments corrected: ₹2.59 Cr</text>
+  <text x="950" y="633" fill="#e2e8f0" font-size="10">Agent identity: BLOCKED (source fix needed)</text>
+  <text x="950" y="653" fill="#e2e8f0" font-size="10">Timestamp integrity: 50.3% history rows flagged</text>
+  <text x="950" y="673" fill="#e2e8f0" font-size="10">Golden dataset freshness: &lt; 24h</text>
+
+  <text x="650" y="770" text-anchor="middle" fill="#475569" font-size="10">Data Analyst Assignment — Architecture Diagram</text>
+</svg>

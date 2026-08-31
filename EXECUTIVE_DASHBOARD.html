@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Collections Recovery — Executive Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0b1220; --panel:#141c2e; --panel2:#101827; --border:#26314a;
+    --text:#e7ecf5; --muted:#8b97ad; --accent:#4fb3ff; --good:#3ed598; --bad:#ff6b6b; --warn:#ffb84f;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;padding:28px 32px;}
+  h1{font-size:20px;margin:0 0 2px;}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:22px;}
+  .grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:18px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+  .card h3{margin:0 0 12px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  .headline{display:flex;gap:14px;align-items:baseline;}
+  .num{font-size:34px;font-weight:700;}
+  .num.bad{color:var(--bad);}
+  .num.good{color:var(--good);}
+  .tag{font-size:11px;color:var(--muted);padding:3px 8px;border:1px solid var(--border);border-radius:20px;}
+  .row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .row:last-child{border-bottom:none;}
+  .row b{font-weight:600;}
+  .badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;}
+  .badge.ok{background:rgba(62,213,152,.15);color:var(--good);}
+  .badge.warn{background:rgba(255,184,79,.15);color:var(--warn);}
+  .badge.bad{background:rgba(255,107,107,.15);color:var(--bad);}
+  canvas{max-height:220px;}
+  .verdict{background:linear-gradient(135deg,#1a2540,#141c2e);border:1px solid var(--accent);border-radius:12px;padding:20px 24px;margin-bottom:20px;}
+  .verdict h2{margin:0 0 6px;font-size:16px;color:var(--accent);}
+  .verdict p{margin:0;font-size:14px;color:var(--text);line-height:1.5;}
+  .footer{margin-top:20px;color:var(--muted);font-size:11px;}
+</style>
+</head>
+<body>
+  <h1>Collections Recovery Performance</h1>
+  <div class="sub">Executive view · Jan – Jul 2026 (Aug partial, excluded from trend) · Golden (de-duplicated) dataset</div>
+
+  <div class="verdict">
+    <h2>Bottom line</h2>
+    <p>The reported <b>"11% month-on-month improvement"</b> is one volatile month (Feb→Mar, +11.03%), not a trend. Across all 7 months, recovery is <b>flat</b> — average change +0.3%, statistical trend test p = 0.89. No portfolio-mix shift, no denominator manipulation, and no statistically real channel-conversion difference were found to explain or hide any change. <b>Recommendation: treat current performance as flat and invest for scale/efficiency, not to defend an improvement that isn't there</b> — see memo for the ₹10 Cr recommendation.</p>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Monthly recovered amount (₹, golden)</h3>
+      <canvas id="trendChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>Claim vs. reality</h3>
+      <div class="headline"><span class="num bad">+11.0%</span><span class="tag">reported (Feb→Mar only)</span></div>
+      <div style="height:10px"></div>
+      <div class="headline"><span class="num good">+0.3%</span><span class="tag">actual avg. MoM, 7 months</span></div>
+      <div class="row"><span>Linear trend p-value</span><b>0.89 (n.s.)</b></div>
+      <div class="row"><span>MoM std. deviation</span><b>±8.4 pts</b></div>
+      <div class="row"><span>Recovery rate range</span><b>4.97% – 5.23%</b></div>
+    </div>
+    <div class="card">
+      <h3>Data quality corrections</h3>
+      <div class="row"><span>Duplicate payments removed</span><b>500 rows / ₹2.59 Cr</b></div>
+      <div class="row"><span>Duplicate call rows removed</span><b>1,271 rows</b></div>
+      <div class="row"><span>Agent identity resolution</span><span class="badge bad">blocked</span></div>
+      <div class="row"><span>Timestamp integrity (history)</span><span class="badge warn">50.3% flagged</span></div>
+      <div class="row"><span>Payment reference as join key</span><span class="badge bad">unsafe</span></div>
+      <div class="row"><span>Portfolio mix stability</span><span class="badge ok">stable</span></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Channel conversion — PTP kept rate</h3>
+      <canvas id="channelChart"></canvas>
+      <div class="footer">χ² = 5.73, p = 0.126 — differences are not statistically significant (n≈1,100–1,200 per channel)</div>
+    </div>
+    <div class="card">
+      <h3>Recovery rate (collected ÷ outstanding of contacted accounts)</h3>
+      <canvas id="rateChart"></canvas>
+      <div class="footer">Normalizes for both de-duplication and month-to-month workload size — still flat</div>
+    </div>
+  </div>
+
+  <div class="footer">Source: golden_monthly_recovery_metrics.csv, golden_payments.csv · Generated from de-duplicated, timezone-normalized data · See DATA_QUALITY_REPORT.md and ANALYSIS_NOTEBOOK.md for full methodology.</div>
+
+<script>
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul'];
+const amounts = [187229127.59,170142453.76,188912374.02,175138043.41,184250278.5,175559726.97,187242265.08];
+const rates = [5.22,5.12,5.23,4.97,5.10,5.03,5.20];
+
+new Chart(document.getElementById('trendChart'), {
+  type:'line',
+  data:{labels:months, datasets:[{data:amounts, borderColor:'#4fb3ff', backgroundColor:'rgba(79,179,255,.15)', fill:true, tension:.3, pointRadius:3}]},
+  options:{plugins:{legend:{display:false}}, scales:{y:{ticks:{color:'#8b97ad', callback:v=>(v/1e7).toFixed(1)+'Cr'}, grid:{color:'#26314a'}}, x:{ticks:{color:'#8b97ad'}, grid:{display:false}}}}
+});
+
+new Chart(document.getElementById('channelChart'), {
+  type:'bar',
+  data:{labels:['CALL','SMS','FIELD','WHATSAPP'], datasets:[{data:[25.7,25.6,24.5,23.9], backgroundColor:['#4fb3ff','#4fb3ff','#4fb3ff','#4fb3ff'], borderRadius:6}]},
+  options:{plugins:{legend:{display:false}}, scales:{y:{min:20,max:30, ticks:{color:'#8b97ad'}, grid:{color:'#26314a'}}, x:{ticks:{color:'#8b97ad'}, grid:{display:false}}}}
+});
+
+new Chart(document.getElementById('rateChart'), {
+  type:'line',
+  data:{labels:months, datasets:[{data:rates, borderColor:'#3ed598', backgroundColor:'rgba(62,213,152,.15)', fill:true, tension:.3, pointRadius:3}]},
+  options:{plugins:{legend:{display:false}}, scales:{y:{min:4.5,max:5.5, ticks:{color:'#8b97ad', callback:v=>v+'%'}, grid:{color:'#26314a'}}, x:{ticks:{color:'#8b97ad'}, grid:{display:false}}}}
+});
+</script>
+</body>
+</html>

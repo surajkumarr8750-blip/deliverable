@@ -1,0 +1,13 @@
+{
+  "payments_raw_rows": 25500,
+  "payments_exact_duplicate_rows_removed": 500,
+  "payments_duplicate_amount_double_counted": 25901961.689999998,
+  "calls_raw_rows": 91350,
+  "calls_exact_duplicate_rows_removed": 1271,
+  "agents_dimension_rows": 30000,
+  "agents_unique_agent_id": 1000,
+  "agents_unique_employee_code": 1099,
+  "agents_agent_id_with_name_conflicts": 1000,
+  "account_status_history_rows": 60000,
+  "status_history_recorded_before_event_pct": 50.32
+}
